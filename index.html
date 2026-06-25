@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Men NFT — Whitelist</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #000000;
+    --white: #ffffff;
+    --gray-900: #0a0a0a;
+    --gray-800: #111111;
+    --gray-700: #1a1a1a;
+    --gray-600: #2a2a2a;
+    --gray-500: #444444;
+    --gray-400: #666666;
+    --gray-300: #999999;
+    --gray-200: #cccccc;
+    --gray-100: #eeeeee;
+    --accent: #ffffff;
+    --border: rgba(255,255,255,0.12);
+    --border-hover: rgba(255,255,255,0.3);
+  }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 64px;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--gray-300);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--white);
+  }
+
+  /* PAGES */
+  .page {
+    display: none;
+    min-height: 100vh;
+    padding-top: 64px;
+  }
+
+  .page.active {
+    display: block;
+  }
+
+  /* ===== HOME PAGE ===== */
+  .hero {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-orbs {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.08);
+    animation: float linear infinite;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+  }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-300);
+    margin-bottom: 2rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(4rem, 12vw, 9rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .hero h1 span {
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--gray-400);
+    letter-spacing: 0.05em;
+    margin-bottom: 3rem;
+    max-width: 400px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-top: 4px;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: var(--white);
+    color: var(--black);
+    border: none;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    text-decoration: none;
+  }
+
+  .btn-primary:hover {
+    background: var(--gray-100);
+    transform: scale(1.02);
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: transparent;
+    color: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+    text-decoration: none;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--border-hover);
+    transform: scale(1.02);
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Mustache SVG decoration */
+  .mustache-deco {
+    width: 80px;
+    opacity: 0.15;
+    margin: 2rem auto 0;
+  }
+
+  /* ===== ROADMAP PAGE ===== */
+  .section-header {
+    text-align: center;
+    padding: 5rem 2rem 3rem;
+  }
+
+  .section-tag {
+    display: inline-block;
+    padding: 5px 14px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header h2 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .roadmap-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 2rem 6rem;
+  }
+
+  .roadmap-phase {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 0 2rem;
+    margin-bottom: 0;
+    position: relative;
+  }
+
+  .phase-label {
+    padding-top: 2px;
+    text-align: right;
+  }
+
+  .phase-num {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+  }
+
+  .phase-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-300);
+    margin-top: 2px;
+  }
+
+  .phase-line {
+    position: relative;
+    padding-bottom: 3rem;
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--border);
+  }
+
+  .phase-line::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 6px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--white);
+  }
+
+  .phase-line.pending::before {
+    background: var(--gray-700);
+    border: 1px solid var(--gray-500);
+  }
+
+  .phase-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .phase-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .phase-items li {
+    font-size: 14px;
+    color: var(--gray-400);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .phase-items li::before {
+    content: '—';
+    color: var(--gray-600);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .phase-status {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .status-done { background: rgba(255,255,255,0.1); color: var(--white); }
+  .status-live { background: rgba(255,255,255,0.15); color: var(--white); border: 1px solid rgba(255,255,255,0.3); }
+  .status-soon { background: transparent; color: var(--gray-500); border: 1px solid var(--border); }
+
+  /* ===== ART PAGE ===== */
+  .art-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin: 0 2rem 6rem;
+  }
+
+  .art-card {
+    background: var(--black);
+    aspect-ratio: 1;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .art-card:hover .art-overlay {
+    opacity: 1;
+  }
+
+  .art-card-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-900);
+  }
+
+  .art-svg {
+    width: 80%;
+    height: 80%;
+  }
+
+  .art-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    gap: 8px;
+  }
+
+  .art-overlay span {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .art-overlay small {
+    font-size: 11px;
+    color: var(--gray-400);
+    letter-spacing: 0.05em;
+  }
+
+  .coming-soon-banner {
+    text-align: center;
+    padding: 4rem 2rem 6rem;
+  }
+
+  .coming-soon-banner h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+  }
+
+  .coming-soon-banner p {
+    font-size: 14px;
+    color: var(--gray-500);
+  }
+
+  /* ===== WL APPLY PAGE ===== */
+  .wl-container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+
+  .wl-task {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.3s;
+    position: relative;
+  }
+
+  .wl-task.completed {
+    border-color: rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .task-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .task-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: background 0.3s, border-color 0.3s;
+  }
+
+  .wl-task.completed .task-num {
+    background: var(--white);
+    color: var(--black);
+    border-color: var(--white);
+  }
+
+  .task-title {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .task-desc {
+    font-size: 13px;
+    color: var(--gray-400);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .task-input-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .task-input {
+    flex: 1;
+    background: var(--gray-900);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--white);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .task-input::placeholder {
+    color: var(--gray-600);
+  }
+
+  .task-input:focus {
+    border-color: var(--border-hover);
+  }
+
+  .task-verify-btn {
+    padding: 10px 18px;
+    background: var(--white);
+    color: var(--black);
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+
+  .task-verify-btn:hover {
+    background: var(--gray-100);
+  }
+
+  .task-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--gray-300);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: transparent;
+    transition: border-color 0.2s, color 0.2s;
+    text-decoration: none;
+    margin-bottom: 0.75rem;
+  }
+
+  .task-link-btn:hover {
+    border-color: var(--border-hover);
+    color: var(--white);
+  }
+
+  .check-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+  }
+
+  .task-check {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 18px;
+    color: var(--white);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .wl-task.completed .task-check {
+    opacity: 1;
+  }
+
+  .wl-progress {
+    margin-bottom: 2rem;
+  }
+
+  .progress-bar-bg {
+    height: 2px;
+    background: var(--gray-800);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--white);
+    border-radius: 100px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--gray-500);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .wl-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--white);
+    color: var(--black);
+    border: none;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 2rem;
+    transition: background 0.2s, opacity 0.3s, transform 0.15s;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .wl-submit.enabled {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .wl-submit.enabled:hover {
+    background: var(--gray-100);
+    transform: scale(1.01);
+  }
+
+  /* SUCCESS MODAL */
+  .success-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem;
+    backdrop-filter: blur(8px);
+  }
+
+  .success-modal.show {
+    display: flex;
+  }
+
+  .success-modal h2 {
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  .success-modal p {
+    color: var(--gray-400);
+    font-size: 16px;
+    max-width: 400px;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .wallet-display {
+    font-size: 12px;
+    color: var(--gray-500);
+    font-family: monospace;
+    background: var(--gray-900);
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    word-break: break-all;
+    max-width: 400px;
+    margin-bottom: 2rem;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 2rem;
+  }
+
+  /* TICKER */
+  .ticker {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    background: var(--gray-900);
+  }
+
+  .ticker-inner {
+    display: inline-block;
+    animation: ticker 20s linear infinite;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+  }
+
+  .ticker-inner span {
+    margin: 0 3rem;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    .nav-links { gap: 1rem; }
+    .nav-links a { font-size: 11px; }
+    .hero-stats { gap: 1.5rem; }
+    .roadmap-phase { grid-template-columns: 80px 1fr; gap: 0 1rem; }
+    .phase-label { display: none; }
+    .roadmap-phase { grid-template-columns: 1fr; }
+    .phase-line { padding-left: 1.25rem; border-left-width: 1px; }
+    .art-grid { margin: 0 0 6rem; }
+    .task-input-row { flex-direction: column; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--gray-700); border-radius: 100px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">THE MEN</div>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')" id="nav-home" class="active">Home</a></li>
+    <li><a onclick="showPage('roadmap')" id="nav-roadmap">Roadmap</a></li>
+    <li><a onclick="showPage('art')" id="nav-art">Sneak Peeks</a></li>
+    <li><a onclick="showPage('apply')" id="nav-apply">Apply WL</a></li>
+  </ul>
+</nav>
+
+<!-- ===== HOME ===== -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-orbs" id="heroOrbs"></div>
+
+    <div class="hero-badge">555 · The Collection</div>
+
+    <h1>
+      <span>THE</span>
+      <span>MEN</span>
+    </h1>
+
+    <p class="hero-sub">555 of them. A hand-crafted collection of distinguished gentlemen living on-chain.</p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">555</div>
+        <div class="stat-label">Supply</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">1</div>
+        <div class="stat-label">Per Wallet</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">WL</div>
+        <div class="stat-label">Priority</div>
+      </div>
+    </div>
+
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="showPage('apply')">Apply for Whitelist</button>
+      <button class="btn-outline" onclick="showPage('roadmap')">View Roadmap</button>
+    </div>
+
+    <svg class="mustache-deco" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 28 C10 28 20 10 35 18 C42 22 45 28 60 20 C75 12 78 22 85 18 C100 10 110 28 110 28 C110 28 100 38 88 32 C80 28 75 22 60 30 C45 38 40 28 32 32 C20 38 10 28 10 28Z" fill="white"/>
+    </svg>
+  </section>
+
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span>THE MEN NFT</span>
+      <span>555 OF THEM</span>
+      <span>FOLLOW @TheMen_NFT</span>
+      <span>WHITELIST NOW OPEN</span>
+      <span>555 DISTINGUISHED GENTLEMEN</span>
+      <span>THE MEN NFT</span>
+      <span>555 OF THEM</span>
+      <span>FOLLOW @TheMen_NFT</span>
+      <span>WHITELIST NOW OPEN</span>
+      <span>555 DISTINGUISHED GENTLEMEN</span>
+    </div>
+  </div>
+
+  <section style="padding: 6rem 2rem; max-width: 900px; margin: 0 auto; text-align: center;">
+    <div class="section-tag">The Project</div>
+    <h2 style="font-size: clamp(2rem,5vw,3.5rem); font-weight: 800; letter-spacing:-0.02em; text-transform:uppercase; margin-bottom:1.5rem; line-height:1.1;">555 Distinguished<br>Gentlemen</h2>
+    <p style="font-size: 16px; color: var(--gray-400); line-height: 1.8; max-width: 560px; margin: 0 auto 3rem;">
+      The Men is an NFT collection of 555 unique, hand-crafted gentlemen. Each one is distinct — united only by their unmistakable mustache. Owning one means being one of 555.
+    </p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+      <div style="background:var(--black); padding:2rem; text-align:center;">
+        <div style="font-size:2rem; font-weight:800; margin-bottom:0.5rem;">555</div>
+        <div style="font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gray-500);">Total Supply</div>
+      </div>
+      <div style="background:var(--black); padding:2rem; text-align:center;">
+        <div style="font-size:2rem; font-weight:800; margin-bottom:0.5rem;">WL</div>
+        <div style="font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gray-500);">Priority Access</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== ROADMAP ===== -->
+<div class="page" id="page-roadmap">
+  <div class="section-header">
+    <div class="section-tag">The Plan</div>
+    <h2>Roadmap</h2>
+  </div>
+
+  <div class="roadmap-container">
+
+    <div class="roadmap-phase">
+      <div class="phase-label">
+        <div class="phase-num">Phase 01</div>
+        <div class="phase-name">Origins</div>
+      </div>
+      <div class="phase-line">
+        <div class="phase-status status-done">Complete</div>
+        <div class="phase-title">The Birth of The Men</div>
+        <ul class="phase-items">
+          <li>Project concept &amp; artwork creation</li>
+          <li>Twitter / X account launch — @TheMen_NFT</li>
+          <li>Community building begins</li>
+          <li>Reached 1,000+ followers</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="phase-label">
+        <div class="phase-num">Phase 02</div>
+        <div class="phase-name">Whitelist</div>
+      </div>
+      <div class="phase-line status-live">
+        <div class="phase-status status-live">Live Now</div>
+        <div class="phase-title">Whitelist Campaign</div>
+        <ul class="phase-items">
+          <li>WL application site launches</li>
+          <li>Follow, RT &amp; engage tasks to earn WL spot</li>
+          <li>Community competitions &amp; giveaways</li>
+          <li>Sneak peek reveals begin</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="phase-label">
+        <div class="phase-num">Phase 03</div>
+        <div class="phase-name">Mint</div>
+      </div>
+      <div class="phase-line pending">
+        <div class="phase-status status-soon">Coming Soon</div>
+        <div class="phase-title">The Mint</div>
+        <ul class="phase-items">
+          <li>Public mint opens</li>
+          <li>555 Men find their owners</li>
+          <li>Reveal event</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="phase-label">
+        <div class="phase-num">Phase 04</div>
+        <div class="phase-name">Post-Mint</div>
+      </div>
+      <div class="phase-line pending">
+        <div class="phase-status status-soon">Coming Soon</div>
+        <div class="phase-title">The Gentleman's Club</div>
+        <ul class="phase-items">
+          <li>Holder-exclusive Discord &amp; channels</li>
+          <li>Royalty benefits for holders</li>
+          <li>Collaborations &amp; partnerships</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="phase-label">
+        <div class="phase-num">Phase 05</div>
+        <div class="phase-name">Future</div>
+      </div>
+      <div class="phase-line pending" style="border-left: 1px dashed rgba(255,255,255,0.08);">
+        <div class="phase-status status-soon">TBA</div>
+        <div class="phase-title">Beyond 555</div>
+        <ul class="phase-items">
+          <li>Merchandise for holders</li>
+          <li>Community-voted future drops</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== ART / SNEAK PEEKS ===== -->
+<div class="page" id="page-art">
+  <div class="section-header">
+    <div class="section-tag">Sneak Peeks</div>
+    <h2>The Art</h2>
+  </div>
+
+  <div class="art-grid">
+    <div class="art-card">
+      <div class="art-card-inner" style="background:#000; padding:0;">
+        <img src="man1.jpg" alt="The Man 1" style="width:100%;height:100%;object-fit:cover;display:block;">
+      </div>
+      <div class="art-overlay">
+        <span>Sneak Peek</span>
+        <small>The Men NFT</small>
+      </div>
+    </div>
+
+    <div class="art-card">
+      <div class="art-card-inner" style="background:#000; padding:0;">
+        <img src="man2.jpg" alt="The Man 2" style="width:100%;height:100%;object-fit:cover;display:block;">
+      </div>
+      <div class="art-overlay">
+        <span>Sneak Peek</span>
+        <small>The Men NFT</small>
+      </div>
+    </div>
+
+    <div class="art-card">
+      <div class="art-card-inner" style="background:#000; padding:0;">
+        <img src="man3.jpg" alt="The Man 3" style="width:100%;height:100%;object-fit:cover;display:block;">
+      </div>
+      <div class="art-overlay">
+        <span>Sneak Peek</span>
+        <small>The Men NFT</small>
+      </div>
+    </div>
+
+    <div class="art-card">
+      <div class="art-card-inner" style="background:#000; padding:0;">
+        <img src="man4.jpg" alt="The Man 4" style="width:100%;height:100%;object-fit:cover;display:block;">
+      </div>
+      <div class="art-overlay">
+        <span>Sneak Peek</span>
+        <small>The Men NFT</small>
+      </div>
+    </div>
+
+    <div class="art-card">
+      <div class="art-card-inner" style="background:#000; padding:0;">
+        <img src="man5.jpg" alt="The Man 5" style="width:100%;height:100%;object-fit:cover;display:block;">
+      </div>
+      <div class="art-overlay">
+        <span>Sneak Peek</span>
+        <small>The Men NFT</small>
+      </div>
+    </div>
+
+    <div class="art-card">
+      <div class="art-card-inner" style="background:#000; padding:0;">
+        <img src="man6.jpg" alt="The Man 6" style="width:100%;height:100%;object-fit:cover;display:block;">
+      </div>
+      <div class="art-overlay">
+        <span>Sneak Peek</span>
+        <small>The Men NFT</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="coming-soon-banner">
+    <h3>Full collection reveal at mint</h3>
+    <p>Follow @TheMen_NFT on X for the latest sneak peeks and reveals</p>
+    <br>
+    <a href="https://x.com/TheMen_NFT" target="_blank" class="btn-outline" style="display:inline-flex;">
+      Follow on X →
+    </a>
+  </div>
+</div>
+
+<!-- ===== APPLY WL ===== -->
+<div class="page" id="page-apply">
+  <div class="section-header">
+    <div class="section-tag">Whitelist</div>
+    <h2>Apply for WL</h2>
+    <p style="color:var(--gray-400); font-size:14px; margin-top:1rem; max-width:400px; margin-inline:auto; line-height:1.6;">Complete all 4 tasks below to secure your whitelist spot for The Men NFT.</p>
+  </div>
+
+  <div class="wl-container">
+    <div class="wl-progress">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+      <div class="progress-label"><span id="progressCount">0</span> / 4 tasks completed</div>
+    </div>
+
+    <!-- TASK 1: FOLLOW -->
+    <div class="wl-task" id="task1">
+      <div class="task-header">
+        <div class="task-num">1</div>
+        <div class="task-title">Follow @TheMen_NFT on X</div>
+      </div>
+      <div class="task-check">✓</div>
+      <p class="task-desc">Follow our official X account to stay updated on all announcements, sneak peeks and the mint date.</p>
+      <a href="https://x.com/TheMen_NFT" target="_blank" class="task-link-btn" onclick="void(0)">
+        → Open @TheMen_NFT on X
+      </a>
+      <div class="task-input-row">
+        <input type="text" class="task-input" id="input-twitter" placeholder="Your X username (e.g. @YourName)" />
+      </div>
+      <button class="task-verify-btn" style="width:100%; margin-top:8px;" onclick="verifyTask(1)">Done</button>
+    </div>
+
+    <!-- TASK 2: LIKE & RT -->
+    <div class="wl-task" id="task2">
+      <div class="task-header">
+        <div class="task-num">2</div>
+        <div class="task-title">Like &amp; Retweet the pinned post</div>
+      </div>
+      <div class="task-check">✓</div>
+      <p class="task-desc">Like and retweet our pinned post to spread the word about The Men NFT to your followers.</p>
+      <a href="https://x.com/TheMen_NFT/status/2068862759777775813" target="_blank" class="task-link-btn">
+        → Open pinned post on X
+      </a>
+      <div class="task-input-row">
+        <button class="task-verify-btn" style="width:100%;" onclick="verifyTask(2)">Done</button>
+      </div>
+    </div>
+
+    <!-- TASK 3: COMMENT -->
+    <div class="wl-task" id="task3">
+      <div class="task-header">
+        <div class="task-num">3</div>
+        <div class="task-title">Comment on the pinned post</div>
+      </div>
+      <div class="task-check">✓</div>
+      <p class="task-desc">Drop a comment on the pinned post and paste your X profile link below so we can verify.</p>
+      <a href="https://x.com/TheMen_NFT/status/2068862759777775813" target="_blank" class="task-link-btn">
+        → Comment on pinned post
+      </a>
+      <div class="task-input-row">
+        <input type="text" class="task-input" id="input-comment" placeholder="Your X profile link (x.com/YourName)" />
+      </div>
+      <button class="task-verify-btn" style="width:100%; margin-top:8px;" onclick="verifyTask(3)">Done</button>
+    </div>
+
+    <!-- TASK 4: WALLET -->
+    <div class="wl-task" id="task4">
+      <div class="task-header">
+        <div class="task-num">4</div>
+        <div class="task-title">Submit your wallet address</div>
+      </div>
+      <div class="task-check">✓</div>
+      <p class="task-desc">Paste your Ethereum (or Solana) wallet address below. This is where your WL spot will be registered.</p>
+      <div class="task-input-row">
+        <input type="text" class="task-input" id="input-wallet" placeholder="0x... or your wallet address" />
+      </div>
+      <button class="task-verify-btn" style="width:100%; margin-top:8px;" onclick="verifyTask(4)">Done</button>
+    </div>
+
+    <button class="wl-submit" id="submitBtn" onclick="submitWL()">Submit Application →</button>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="success-modal" id="successModal">
+  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" style="margin-bottom:1.5rem; opacity:0.8;">
+    <circle cx="32" cy="32" r="31" stroke="white" stroke-width="1" opacity="0.3"/>
+    <polyline points="20,33 28,41 44,24" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <svg width="80" height="53" viewBox="0 0 120 40" fill="none" style="margin-bottom:1.5rem; opacity:0.5;">
+    <path d="M10 28 C10 28 20 10 35 18 C42 22 45 28 60 20 C75 12 78 22 85 18 C100 10 110 28 110 28 C110 28 100 38 88 32 C80 28 75 22 60 30 C45 38 40 28 32 32 C20 38 10 28 10 28Z" fill="white"/>
+  </svg>
+  <h2>You're on the list</h2>
+  <p>Your whitelist application has been received. Welcome to The Men.</p>
+  <div class="wallet-display" id="walletDisplay"></div>
+  <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
+    <a id="shareXBtn" href="#" target="_blank" class="btn-primary" style="background:#000; color:#fff; border:1px solid rgba(255,255,255,0.3);">
+      Share on X →
+    </a>
+    <button class="btn-primary" onclick="document.getElementById('successModal').classList.remove('show')">Close</button>
+  </div>
+</div>
+
+<script>
+  const taskData = { 1: false, 2: false, 3: false, 4: false };
+  const inputs = { 1: 'input-twitter', 2: null, 3: 'input-comment', 4: 'input-wallet' };
+
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.getElementById('nav-' + id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function verifyTask(num) {
+    if (num > 1 && !taskData[num - 1]) {
+      const prev = document.getElementById('task' + (num - 1));
+      prev.style.outline = '1px solid rgba(255,80,80,0.5)';
+      setTimeout(() => prev.style.outline = '', 900);
+      return;
+    }
+    if (taskData[num]) return;
+    const inputId = inputs[num];
+    const inputEl = inputId ? document.getElementById(inputId) : null;
+    const val = inputEl ? inputEl.value.trim() : 'done';
+    if (inputEl && !val) {
+      inputEl.style.borderColor = 'rgba(255,80,80,0.5)';
+      setTimeout(() => inputEl.style.borderColor = '', 800);
+      return;
+    }
+    taskData[num] = val || 'done';
+    document.getElementById('task' + num).classList.add('completed');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const done = Object.values(taskData).filter(Boolean).length;
+    document.getElementById('progressBar').style.width = (done / 4 * 100) + '%';
+    document.getElementById('progressCount').textContent = done;
+    const btn = document.getElementById('submitBtn');
+    if (done === 4) {
+      btn.classList.add('enabled');
+    } else {
+      btn.classList.remove('enabled');
+    }
+  }
+
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqpJ0N40bqSbkAQ5PDNkBP65BKuyFbnjh_IOATU3KDfpeEGXrHRMQD1ZIGCe9RxxulUg/exec';
+
+  function submitWL() {
+    const wallet = taskData[4] || '';
+    const twitter = taskData[1] || '';
+    const profileLink = taskData[3] || '';
+
+    document.getElementById('walletDisplay').textContent = wallet;
+    const tweet = encodeURIComponent('I just secured my whitelist spot for @TheMen_NFT — 555 of them. 🥸\n\nApply here: ');
+    document.getElementById('shareXBtn').href = 'https://x.com/intent/tweet?text=' + tweet;
+    document.getElementById('successModal').classList.add('show');
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ twitter, profileLink, wallet }),
+    }).catch(() => {});
+  }
+
+  // Generate floating orbs
+  const orbs = document.getElementById('heroOrbs');
+  for (let i = 0; i < 12; i++) {
+    const o = document.createElement('div');
+    o.className = 'orb';
+    const size = 20 + Math.random() * 60;
+    const left = Math.random() * 100;
+    const delay = Math.random() * 15;
+    const dur = 12 + Math.random() * 15;
+    o.style.cssText = `width:${size}px;height:${size}px;left:${left}%;animation-delay:-${delay}s;animation-duration:${dur}s;`;
+    orbs.appendChild(o);
+  }
+</script>
+</body>
+</html>
